@@ -1,11 +1,11 @@
-#!/usr/bin/perl -T
+#!/usr/bin/perl
 #
 # Stupid script to scan/file character sheets
 # ./characterscan <Player Initals> <Game> <Character_Name>
 #
 # v0.1 Inital Write.  Drunk, dont blame me for bad code. 4/20/07
 # v0.2 Added Directory Checking - Now Sober, Prompts, Date Bug (martine@danga.com)
-# v0.3 
+# v0.3 Imported to subversion - check there for revision 
 
 
 use strict;
@@ -22,7 +22,7 @@ my %playerinitals = ( FP => 'Frank',
 
 my %gameinitals = ( RWOT => 'Red_Wizards_of_Thay',
 	      BFS  => 'Brandons_Freak_Show',
-	      DWG  => 'Daxs_Wednesday_Forgotten_Realms',
+	      DFR  => 'Daxs_Wednesday_Forgotten_Realms',
 	      NA => 'Misc',
 	    );
 
@@ -33,17 +33,17 @@ $mon += 1;
 unless ($ARGV[0] && $ARGV[1] && $ARGV[2]) {
 	print "Welcome to D&D Document Scanner!\nSyntax is $0 <Initals> <Game> <Character Name>\n";
 	print "Players:\n";
-	foreach $_ (keys %playerinitals) {
+	foreach $_ (sort keys %playerinitals) {
 		print "$_ => $playerinitals{$_}\n";
 	}
-	print "\nGames:\n";
-	foreach $_ (keys %gameinitals) {
+	print "=====\nGames:\n";
+	foreach $_ (sort keys %gameinitals) {
 		print "$_ => $gameinitals{$_}\n";
 	}
 };
 
 unless (exists $playerinitals{$ARGV[0]} && exists $gameinitals{$ARGV[1]}) {
-	print "Check your syntax, player and/or game dont exist\n";
+	print "=====\nCheck your syntax, player and/or game dont exist\n";
 	exit 0;
 };
 
@@ -65,7 +65,7 @@ unless (-e $characterpath) {
 	print `ls /home/corvus/dndscans/$game/$player/.`;
 	print "=====\nContinue [y/N]? ";
 	my $pathanswer = <STDIN>;
-	exit 0 unless chomp($pathanswer) eq 'Y';
+	exit 0 unless ($pathanswer == 'Y');
 	print "Making directory $savepath\n";
 	`mkdir -p $savepath`;
 };
@@ -75,4 +75,4 @@ print "Scanning.....\n";
 
 print "Do you wish to sync these to tass [N/y]? ";
 my $syncanswer = <STDIN>;
-`$synccommand` if chomp($syncanswer) eq 'Y';
+`$synccommand` if ($syncanswer) == 'Y');
