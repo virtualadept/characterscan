@@ -22,6 +22,7 @@ my %playerinitals = ( FP => 'Frank',
 
 my %gameinitals = ( RWOT => 'Red_Wizards_of_Thay',
 	      BFS  => 'Brandons_Freak_Show',
+	      DWG  => 'Daxs_Wednesday_Forgotten_Realms',
 	      NA => 'Misc',
 	    );
 
