@@ -36,7 +36,7 @@ $mon += 1;
 
 unless ($ARGV[0] && $ARGV[1] && $ARGV[2]) {
 	print "Welcome to the RPG Document Scanner!\nSyntax is $0 <Platform> <Initals> <Game> <Character Name>\n";
-	print "Platform:\n"
+	print "Platform:\n";
 	foreach $_ (sort keys %platforminitals) {
 		print "$_ => $platforminitals{$_}\n";
 	}
@@ -82,4 +82,4 @@ print "Scanning.....\n";
 
 print "Do you wish to sync these to tass [N/y]? ";
 my $syncanswer = <STDIN>;
-`$synccommand` if ($syncanswer) == 'Y');
+`$synccommand` if ($syncanswer == 'Y');
