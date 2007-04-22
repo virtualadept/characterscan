@@ -10,6 +10,10 @@
 
 use strict;
 
+my %platforminitals = ( DND => "dnd",
+		 SW => "starwars",
+		 WOD => "worldofdarkness"
+	       );
 
 my %playerinitals = ( FP => 'Frank',
 		DM => 'Dax',
@@ -31,8 +35,12 @@ $year += 1900;
 $mon += 1;
 
 unless ($ARGV[0] && $ARGV[1] && $ARGV[2]) {
-	print "Welcome to D&D Document Scanner!\nSyntax is $0 <Initals> <Game> <Character Name>\n";
-	print "Players:\n";
+	print "Welcome to the RPG Document Scanner!\nSyntax is $0 <Platform> <Initals> <Game> <Character Name>\n";
+	print "Platform:\n"
+	foreach $_ (sort keys %platforminitals) {
+		print "$_ => $platforminitals{$_}\n";
+	}
+	print "=====\nPlayers:\n";
 	foreach $_ (sort keys %playerinitals) {
 		print "$_ => $playerinitals{$_}\n";
 	}
@@ -42,27 +50,26 @@ unless ($ARGV[0] && $ARGV[1] && $ARGV[2]) {
 	}
 };
 
-unless (exists $playerinitals{$ARGV[0]} && exists $gameinitals{$ARGV[1]}) {
-	print "=====\nCheck your syntax, player and/or game dont exist\n";
+unless (exists $platforminitals{$ARGV[0]} && exists $playerinitals{$ARGV[1]} && exists $gameinitals{$ARGV[2]}) {
+	print "=====\nCheck your syntax, platform player and/or game dont exist\n";
 	exit 0;
 };
 
 
-
-my $player = $playerinitals{$ARGV[0]};
-my $game = $gameinitals{$ARGV[1]};
-my $charactername = lc($ARGV[2]);
+my $platform = $platforminitals{$ARGV[0]} . "scans";
+my $player = $playerinitals{$ARGV[1]};
+my $game = $gameinitals{$ARGV[2]};
+my $charactername = lc($ARGV[3]);
 $charactername =~ s/ /_/g;
-
-my $characterpath = "/home/corvus/dndscans/$game/$player/$charactername";
-my $savepath = "/home/corvus/dndscans/$game/$player/$charactername/$mon-$mday-$year/";
+my $characterpath = "/home/corvus/rpgscans/$platform/$game/$player/$charactername";
+my $savepath = "/home/corvus/rpgscans/$platform/$game/$player/$charactername/$mon-$mday-$year/";
 my $scancommand = "/usr/bin/scanadf -N --source ADF --batch-scan -o $savepath/$charactername-%d -S/usr/local/bin/ppmtojpeg.sh";
-my $synccommand = "rsync -avPe ssh /home/corvus/dndscans/* corvus\@tass.int.vadept.com:/var/www/dnd/characters/.";
+my $synccommand = "rsync -avPe ssh /home/corvus/rpgscans/$platform/* corvus\@tass.int.vadept.com:/var/www/$platform/characters/.";
 
 
 unless (-e $characterpath) {
 	print "Directory for character \"$charactername\" does not exist.\nDid you mean one of these?\n=====\n";
-	print `ls /home/corvus/dndscans/$game/$player/.`;
+	print `ls /home/corvus/rpgscans/$platform/$game/$player/.`;
 	print "=====\nContinue [y/N]? ";
 	my $pathanswer = <STDIN>;
 	exit 0 unless ($pathanswer == 'Y');
