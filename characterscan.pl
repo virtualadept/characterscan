@@ -34,12 +34,8 @@ my %gameinitals = ( DND => { name => 'dnd',
 			     NA   => 'Misc' } 
 		   );
 
-my $script = $0;
 
-my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime time;
-$year += 1900;
-$mon += 1;
-
+# Sanity checks/Usage
 unless ($ARGV[0] && $ARGV[1] && $ARGV[2]) {
 	usage();
 	exit 0;
@@ -52,6 +48,10 @@ unless (exists $gameinitals{$ARGV[0]}{'name'} && exists $playerinitals{$ARGV[1]}
 };
 
 
+# Variables and Shit
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime time;
+$year += 1900;
+$mon += 1;
 my $platform = $gameinitals{$ARGV[0]}{'name'} . "scans";
 my $player = $playerinitals{$ARGV[1]};
 my $game = $gameinitals{$ARGV[0]}{$ARGV[2]};
@@ -62,9 +62,12 @@ my $savepath = "/home/corvus/rpgscans/$platform/$game/$player/$charactername/$mo
 my $scancommand = "/usr/bin/scanadf -N --source ADF --batch-scan -o $savepath/$charactername-%d -S/usr/local/bin/ppmtojpeg.sh";
 my $synccommand = "rsync -avPe ssh /home/corvus/rpgscans/$platform/* corvus\@tass.int.vadept.com:/var/www/$gameinitals{$ARGV[0]}{'name'}/characters/.";
 
-print "$characterpath\n$savepath\n$synccommand\n";
+# Final Confirmation
+print "\n\n*Confirm Selection:\nPlatform:$platform\nPlayer:$player\nCharacter:$charactername\n\nContinue? ";
+my $confanswer = <STDIN>;
+exit 0 unless ($confanswer == 'Y');
 
-
+# Make the warn and make the directory if it doesnt exist
 unless (-e $characterpath) {
 	print "Directory for character \"$charactername\" does not exist.\nDid you mean one of these?\n=====\n";
 	print `ls /home/corvus/rpgscans/$platform/$game/$player/.`;
@@ -75,17 +78,20 @@ unless (-e $characterpath) {
 	`mkdir -p $savepath`;
 };
 
+# Finally scan everything
 print "Scanning.....\n";
 `$scancommand`; 
 
+# Sync to server?
 print "Do you wish to sync these to tass [N/y]? ";
 my $syncanswer = <STDIN>;
 `$synccommand` if ($syncanswer == 'Y');
 
+## ---- ##
 
 # Start Subs
 sub usage {
-	print "Welcome to the RPG Document Scanner!\nSyntax is $script <Platform> <Initals> <Game> <Character Name>\n";
+	print "Welcome to the RPG Document Scanner!\nSyntax is characterscan.pl <Platform> <Initals> <Game> <Character Name>\n";
 	print "\nPlatform & Game:\n";
 	foreach my $platkey (sort keys %gameinitals) {
 		print "\n";
