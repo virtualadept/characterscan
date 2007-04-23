@@ -10,11 +10,6 @@
 
 use strict;
 
-my %platforminitals = ( DND => "dnd",
-		 SW => "starwars",
-		 WOD => "worldofdarkness"
-	       );
-
 my %playerinitals = ( FP => 'Frank',
 		DM => 'Dax',
 		BB => 'Brandon',
@@ -24,11 +19,20 @@ my %playerinitals = ( FP => 'Frank',
 		CP => 'Cassie'
 	      );
 
-my %gameinitals = ( RWOT => 'Red_Wizards_of_Thay',
-	      BFS  => 'Brandons_Freak_Show',
-	      DFR  => 'Daxs_Wednesday_Forgotten_Realms',
-	      NA => 'Misc',
-	    );
+
+my %gameinitals = ( DND => { name => 'dnd',
+			     BFS  => 'Brandons_Freak_Show',
+			     DFR  => 'Daxs_Wednesday_Forgotten_Realms',
+			     NA   => 'Misc',
+			     RWOT => 'Red_Wizards_of_Thay' },
+		    
+		    SW  => { name => 'starwars',
+			     CF   => 'Chris_Game' },
+		    
+                    WOD => { name => 'worldofdarkness',
+			     PD	  => 'Project_Daedelus',
+			     NA   => 'Misc' } 
+		   );
 
 my $script = $0;
 
@@ -41,22 +45,24 @@ unless ($ARGV[0] && $ARGV[1] && $ARGV[2]) {
 	exit 0;
 };
 
-unless (exists $platforminitals{$ARGV[0]} && exists $playerinitals{$ARGV[1]} && exists $gameinitals{$ARGV[2]}) {
-	print "=====\nCheck your syntax, platform player and/or game dont exist\n";
+unless (exists $gameinitals{$ARGV[0]}{'name'} && exists $playerinitals{$ARGV[1]} && exists $gameinitals{$ARGV[0]}{$ARGV[2]}) {
+	print "\n\n!!!!!!Check your syntax, platform player and/or game dont exist!!!!!\n\n";
 	usage();
 	exit 0;
 };
 
 
-my $platform = $platforminitals{$ARGV[0]} . "scans";
+my $platform = $gameinitals{$ARGV[0]}{'name'} . "scans";
 my $player = $playerinitals{$ARGV[1]};
-my $game = $gameinitals{$ARGV[2]};
+my $game = $gameinitals{$ARGV[0]}{$ARGV[2]};
 my $charactername = lc($ARGV[3]);
 $charactername =~ s/ /_/g;
 my $characterpath = "/home/corvus/rpgscans/$platform/$game/$player/$charactername";
 my $savepath = "/home/corvus/rpgscans/$platform/$game/$player/$charactername/$mon-$mday-$year/";
 my $scancommand = "/usr/bin/scanadf -N --source ADF --batch-scan -o $savepath/$charactername-%d -S/usr/local/bin/ppmtojpeg.sh";
-my $synccommand = "rsync -avPe ssh /home/corvus/rpgscans/$platform/* corvus\@tass.int.vadept.com:/var/www/$platform/characters/.";
+my $synccommand = "rsync -avPe ssh /home/corvus/rpgscans/$platform/* corvus\@tass.int.vadept.com:/var/www/$gameinitals{$ARGV[0]}{'name'}/characters/.";
+
+print "$characterpath\n$savepath\n$synccommand\n";
 
 
 unless (-e $characterpath) {
@@ -80,17 +86,18 @@ my $syncanswer = <STDIN>;
 # Start Subs
 sub usage {
 	print "Welcome to the RPG Document Scanner!\nSyntax is $script <Platform> <Initals> <Game> <Character Name>\n";
-	print "\nPlatform:\n";
-	foreach $_ (sort keys %platforminitals) {
-		print "$_ => $platforminitals{$_}\n";
+	foreach my $platkey (sort keys %gameinitals) {
+		print "\nPlatform & Game:\n";
+		print "--> $platkey => $gameinitals{$platkey}{'name'}\n";
+		foreach my $gamekey (sort keys %{$gameinitals{$platkey}}) {
+			next if ($gamekey eq 'name');
+			print "`--> $gamekey => $gameinitals{$platkey}{$gamekey}\n"
+		}
 	}
-	print "=====\nPlayers:\n";
+	
+	print "\n=====\nPlayers:\n";
 	foreach $_ (sort keys %playerinitals) {
 		print "$_ => $playerinitals{$_}\n";
-	}
-	print "=====\nGames:\n";
-	foreach $_ (sort keys %gameinitals) {
-		print "$_ => $gameinitals{$_}\n";
 	}
 	print "\n\n";
 };
