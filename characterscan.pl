@@ -30,28 +30,20 @@ my %gameinitals = ( RWOT => 'Red_Wizards_of_Thay',
 	      NA => 'Misc',
 	    );
 
+my $script = $0;
+
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime time;
 $year += 1900;
 $mon += 1;
 
 unless ($ARGV[0] && $ARGV[1] && $ARGV[2]) {
-	print "Welcome to the RPG Document Scanner!\nSyntax is $0 <Platform> <Initals> <Game> <Character Name>\n";
-	print "Platform:\n";
-	foreach $_ (sort keys %platforminitals) {
-		print "$_ => $platforminitals{$_}\n";
-	}
-	print "=====\nPlayers:\n";
-	foreach $_ (sort keys %playerinitals) {
-		print "$_ => $playerinitals{$_}\n";
-	}
-	print "=====\nGames:\n";
-	foreach $_ (sort keys %gameinitals) {
-		print "$_ => $gameinitals{$_}\n";
-	}
+	usage();
+	exit 0;
 };
 
 unless (exists $platforminitals{$ARGV[0]} && exists $playerinitals{$ARGV[1]} && exists $gameinitals{$ARGV[2]}) {
 	print "=====\nCheck your syntax, platform player and/or game dont exist\n";
+	usage();
 	exit 0;
 };
 
@@ -83,3 +75,22 @@ print "Scanning.....\n";
 print "Do you wish to sync these to tass [N/y]? ";
 my $syncanswer = <STDIN>;
 `$synccommand` if ($syncanswer == 'Y');
+
+
+# Start Subs
+sub usage {
+	print "Welcome to the RPG Document Scanner!\nSyntax is $script <Platform> <Initals> <Game> <Character Name>\n";
+	print "\nPlatform:\n";
+	foreach $_ (sort keys %platforminitals) {
+		print "$_ => $platforminitals{$_}\n";
+	}
+	print "=====\nPlayers:\n";
+	foreach $_ (sort keys %playerinitals) {
+		print "$_ => $playerinitals{$_}\n";
+	}
+	print "=====\nGames:\n";
+	foreach $_ (sort keys %gameinitals) {
+		print "$_ => $gameinitals{$_}\n";
+	}
+	print "\n\n";
+};
