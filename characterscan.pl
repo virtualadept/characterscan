@@ -99,10 +99,10 @@ sub usage {
 	print "\nPlatform & Game:\n";
 	foreach my $platkey (sort keys %gameinitals) {
 		print "\n";
-		print "-> $platkey => $gameinitals{$platkey}{'name'}\n";
+		print "--> $gameinitals{$platkey}{'name'} <--\n";
 		foreach my $gamekey (sort keys %{$gameinitals{$platkey}}) {
 			next if ($gamekey eq 'name');
-			print "`--> $gamekey => $gameinitals{$platkey}{$gamekey}\n"
+			print " $gamekey => $gameinitals{$platkey}{$gamekey}\n"
 		}
 	}
 	
