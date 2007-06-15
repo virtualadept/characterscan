@@ -6,7 +6,11 @@
 # v0.1 Inital Write.  Drunk, dont blame me for bad code. 4/20/07
 # v0.2 Added Directory Checking - Now Sober, Prompts, Date Bug (martine@danga.com)
 # v0.3 Imported to subversion - check there for revision 
-
+# 
+# !!!WARNING!!! This script is highly specific to one setup.  Dont really use unless
+# you know what you are doing.
+#
+#
 
 use strict;
 
