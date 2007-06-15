@@ -95,11 +95,12 @@ my $syncanswer = <STDIN>;
 
 # Start Subs
 sub usage {
-	print "Welcome to the RPG Document Scanner!\nSyntax is characterscan.pl <Platform> <Initals> <Game> <Character Name>\n";
+	print "Welcome to the RPG Document Scanner!\n\nSyntax is characterscan.pl <Platform> <Initals> <Game> <Character Name>\n";
+	print "Example: \"./characterscan.pl WOD FP PD evan\"\n";
 	print "\nPlatform & Game:\n";
 	foreach my $platkey (sort keys %gameinitals) {
 		print "\n";
-		print "--> $gameinitals{$platkey}{'name'} <--\n";
+		print "--> $platkey => $gameinitals{$platkey}{'name'} <--\n";
 		foreach my $gamekey (sort keys %{$gameinitals{$platkey}}) {
 			next if ($gamekey eq 'name');
 			print " $gamekey => $gameinitals{$platkey}{$gamekey}\n"
