@@ -31,10 +31,12 @@ my %gameinitals = ( DND => { name => 'dnd',
 			     RWOT => 'Red_Wizards_of_Thay' },
 		    
 		    SW  => { name => 'starwars',
-			     CF   => 'Chris_Game' },
+			     GAS  => 'Golden_Age_of_Sith',
+			     CW	  => 'Clone_Wars' },
 		    
                     WOD => { name => 'worldofdarkness',
 			     PD	  => 'Project_Daedelus',
+			     FR   => 'Fallen_Reward',
 			     NA   => 'Misc' } 
 		   );
 
